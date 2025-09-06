@@ -98,7 +98,7 @@ test/
 ---
 
 ## 📷 Screenshots
-_Add screenshots of your app here for better documentation._
+![alt text](Screenshot_20250906-155448.jpg)
 
 ---
 
