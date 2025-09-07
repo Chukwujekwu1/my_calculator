@@ -8,7 +8,7 @@
 // import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:my_calulator/main.dart';
+import 'package:my_calculator/main.dart';
 
 void main() {
   testWidgets('Calculator displays and updates output', (WidgetTester tester) async {

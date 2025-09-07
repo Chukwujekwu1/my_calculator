@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:my_calulator/components/calculator_logic.dart';
+import 'package:my_calculator/components/calculator_logic.dart';
 
 void main() {
   test('Addition works', () {

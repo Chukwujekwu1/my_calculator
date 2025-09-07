@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:my_calulator/components/calculator_button.dart';
+import 'package:my_calculator/components/calculator_button.dart';
 
 class Calculator extends StatefulWidget {
   const Calculator({super.key});
@@ -38,80 +38,84 @@ class _CalculatorState extends State<Calculator> {
 }
 
 
-  // Handles logic when a calculator button is pressed
-void buttonPressed(String value) {
-  setState(() {
-    if (value == "AC") {
-      display = "";
-      input = "";
-      output = "";
-      firstNum = null;
-      secondNum = null;
-      operator = null;
-    } 
-    else if (value == "C") {
-      if (display.isNotEmpty) {
-        display = display.substring(0, display.length - 1);
-        input = input.isNotEmpty ? input.substring(0, input.length - 1) : "";
-      }
-    } 
-    // Square root
-    else if (value == "√") {
-      double? num = double.tryParse(input.isNotEmpty ? input : output);
-      if (num != null) {
-        output = (num >= 0) ? formatResult(sqrt(num)) : "Error"; 
-        display = output;
-        input = output;
-      }
-    }
-    // Percentage
-    else if (value == "%") {
-      double? num = double.tryParse(input.isNotEmpty ? input : output);
-      if (num != null) {
-        output = formatResult(num / 100);
-        display = output;
-        input = output;
-      }
-    }
-    // Operators
-    else if (value == "+" || value == "-" || value == "x" || value == "÷") {
-      // if coming from result, reuse output as firstNum
-      if (output.isNotEmpty && input.isEmpty) {
-        firstNum = double.tryParse(output);
-      } else {
-        firstNum = double.tryParse(input);
-      }
-      operator = value;
-      display += value;
-      input = ""; // reset input for next number
-    } 
-    // Equal (=)
-    else if (value == "=") {
-      secondNum = double.tryParse(input);
-      if (firstNum != null && secondNum != null && operator != null) {
-        switch (operator) {
-          case "+": output = formatResult(firstNum! + secondNum!); break;
-          case "-": output = formatResult(firstNum! - secondNum!); break;
-          case "x": output = formatResult(firstNum! * secondNum!); break;
-          case "÷":
-            output = secondNum == 0 ? "Error" : formatResult(firstNum! / secondNum!);
-            break;
-        }
-        display = output;
-        // prepare result for chaining
-        input = output;
+  // Handles logic when a calculator button is pressed asynchronously
+  // Uses Future and async to allow for non-blocking UI and possible heavy computation
+  Future<void> buttonPressed(String value) async {
+    // Simulate async work (can be replaced with real async logic)
+    await Future.delayed(Duration(milliseconds: 10));
+    setState(() {
+      // Reset all values if 'AC' is pressed
+      if (value == "AC") {
+        display = "";
+        input = "";
+        output = "";
         firstNum = null;
         secondNum = null;
         operator = null;
+      } 
+      // Remove last character if 'C' is pressed
+      else if (value == "C") {
+        if (display.isNotEmpty) {
+          display = display.substring(0, display.length - 1);
+          input = input.isNotEmpty ? input.substring(0, input.length - 1) : "";
+        }
+      } 
+      // Calculate square root if '√' is pressed
+      else if (value == "√") {
+        double? num = double.tryParse(input.isNotEmpty ? input : output);
+        if (num != null) {
+          output = (num >= 0) ? formatResult(sqrt(num)) : "Error"; 
+          display = output;
+          input = output;
+        }
       }
-    } 
-    // Numbers or decimal
-    else {
-      input += value;
-      display += value;
-    }
-  });
-}
+      // Calculate percentage if '%' is pressed
+      else if (value == "%") {
+        double? num = double.tryParse(input.isNotEmpty ? input : output);
+        if (num != null) {
+          output = formatResult(num / 100);
+          display = output;
+          input = output;
+        }
+      }
+      // Handle arithmetic operators
+      else if (value == "+" || value == "-" || value == "x" || value == "÷") {
+        // Use output as firstNum if chaining, otherwise use input
+        if (output.isNotEmpty && input.isEmpty) {
+          firstNum = double.tryParse(output);
+        } else {
+          firstNum = double.tryParse(input);
+        }
+        operator = value;
+        display += value;
+        input = "";
+      } 
+      // Perform calculation if '=' is pressed
+      else if (value == "=") {
+        secondNum = double.tryParse(input);
+        if (firstNum != null && secondNum != null && operator != null) {
+          switch (operator) {
+            case "+": output = formatResult(firstNum! + secondNum!); break;
+            case "-": output = formatResult(firstNum! - secondNum!); break;
+            case "x": output = formatResult(firstNum! * secondNum!); break;
+            case "÷":
+              output = secondNum == 0 ? "Error" : formatResult(firstNum! / secondNum!);
+              break;
+          }
+          display = output;
+          input = output;
+          firstNum = null;
+          secondNum = null;
+          operator = null;
+        }
+      } 
+      // Handle numbers and decimal point
+      else {
+        input += value;
+        display += value;
+      }
+    });
+  }
 
 
 
